@@ -1,0 +1,8 @@
+type Query {
+    countries(countryFilter: String): [Country]
+}
+
+type Country {
+    name: String
+    positiveCases: Int
+}
