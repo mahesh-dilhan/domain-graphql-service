@@ -7,7 +7,7 @@ import com.netflix.graphql.dgs.InputArgument
 
 @DgsComponent
 class CovidCountriesDataFetcher {
-    private var countries = mutableListOf<Country>(
+    private var countries = mutableSetOf<Country>(
             Country("US", 123),
             Country("UK", 3423),
             Country("SL", 234),
@@ -15,9 +15,9 @@ class CovidCountriesDataFetcher {
             Country("IN", 563))
 
     @DgsQuery
-    fun countries(@InputArgument countryFilter : String?): List<Country> {
+    fun countries(@InputArgument countryFilter : String?): Set<Country> {
         return if(countryFilter != null) {
-            countries.filter { it.name.contains(countryFilter) }
+            countries.filter { it.name.contains(countryFilter) }.toSet()
         } else {
             countries
         }
@@ -25,11 +25,18 @@ class CovidCountriesDataFetcher {
 
 
     @DgsMutation
-    fun addCountry(@InputArgument name: String, @InputArgument positiveCases: Int): List<Country> {
-       countries.add(CovidCountriesDataFetcher.Country(name,positiveCases))
-       return countries
+    fun addCountry(@InputArgument name: String, @InputArgument positiveCases: Int): Set<Country> {
+        var country = countries.find { it.name.contains(name) }
+        if(null!=country) {
+            country.positiveCases=positiveCases
+        } else {
+           countries.add(Country(name,positiveCases))
+        }
+
+        return countries.toSet()
     }
 
-    data class Country(val name: String, var positiveCases: Int)
+
+    data class Country(var name: String, var positiveCases: Int)
 
 }
