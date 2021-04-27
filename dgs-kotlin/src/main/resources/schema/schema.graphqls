@@ -2,6 +2,10 @@ type Query {
     countries(countryFilter: String): [Country]
 }
 
+type Mutation {
+    addCountry(name: String!, positiveCases: Int!): [Country]
+}
+
 type Country {
     name: String
     positiveCases: Int
