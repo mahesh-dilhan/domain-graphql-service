@@ -1,12 +1,12 @@
 package com.example.dgskotlin
 
-import com.netflix.graphql.dgs.DgsComponent
-import com.netflix.graphql.dgs.DgsMutation
-import com.netflix.graphql.dgs.DgsQuery
-import com.netflix.graphql.dgs.InputArgument
+import com.netflix.graphql.dgs.*
+import org.reactivestreams.Publisher
+import reactor.core.publisher.ConnectableFlux
 
 @DgsComponent
 class CovidCountriesDataFetcher {
+
     private var countries = mutableSetOf<Country>(
             Country("US", 123),
             Country("UK", 3423),
@@ -35,7 +35,6 @@ class CovidCountriesDataFetcher {
 
         return countries.toSet()
     }
-
 
     data class Country(var name: String, var positiveCases: Int)
 
