@@ -14,6 +14,15 @@ class CovidCountriesDataFetcher {
             Country("SG", 5672019),
             Country("IN", 563))
 
+    private var vaccines = mutableSetOf<Vaccine>(
+            Vaccine("Moderna", "US", true)
+            ,Vaccine("Fizer", "US", true)
+            ,Vaccine("AstraZenica", "UK", true)
+            ,Vaccine("Cinfarm", "CH", true)
+            ,Vaccine("Sputnic", "RUS", true)
+            ,Vaccine("AstraZenica", "SL", true)
+  )
+
     @DgsQuery
     fun countries(@InputArgument countryFilter : String?): Set<Country> {
         return if(countryFilter != null) {
@@ -23,6 +32,16 @@ class CovidCountriesDataFetcher {
         }
     }
 
+
+    @DgsData(parentType = "Country", field = "vaccines")
+    fun vaccines(dfe :DgsDataFetchingEnvironment) : Set<Vaccine> {
+        val cntry: Country = dfe.getSource()
+        return if(cntry!=null){
+            vaccines.filter{it.country.contains(cntry.name)}.toSet()
+        } else {
+            mutableSetOf<Vaccine>()
+        }
+    }
 
     @DgsMutation
     fun addCountry(@InputArgument name: String, @InputArgument positiveCases: Int): Set<Country> {
@@ -37,5 +56,5 @@ class CovidCountriesDataFetcher {
     }
 
     data class Country(var name: String, var positiveCases: Int)
-
+    data class Vaccine(var name: String, var country: String, var ordered: Boolean)
 }

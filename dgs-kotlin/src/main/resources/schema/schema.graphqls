@@ -6,11 +6,14 @@ type Mutation {
     addCountry(name: String!, positiveCases: Int!): [Country]
 }
 
-type Subscription {
-    latest : [Country]
-}
-
 type Country {
     name: String
     positiveCases: Int
+    vaccines: [Vaccine]
+}
+
+type Vaccine {
+    name: String
+    country: String
+    ordered: Boolean
 }
